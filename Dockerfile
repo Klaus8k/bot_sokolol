@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python
 
 # установить каталог для приложения
 WORKDIR .
@@ -7,12 +7,12 @@ WORKDIR .
 COPY . .
 
 # установка зависимостей
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requerements
 
-ENV TZ 
+# ENV TZ 
 
 # какой порт должен экспоузить контейнер - декларация - нужно прокидывать все равно
 EXPOSE 5000
 
 # запуск команды
-CMD ["python", "./manage.py", "runserver", "0.0.0.0:5000"]
+CMD ["python", "./main.py"]
