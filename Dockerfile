@@ -1,10 +1,11 @@
-FROM python
+FROM python:latest
 
 # установить каталог для приложения
-WORKDIR .
+WORKDIR /usr/src/app
 
 # копировать все файлы в контейнер
-COPY . .
+COPY . /usr/src/app
+
 
 # установка зависимостей
 RUN pip install --no-cache-dir -r requerements
@@ -15,4 +16,4 @@ RUN pip install --no-cache-dir -r requerements
 EXPOSE 5000
 
 # запуск команды
-CMD ["python", "./main.py"]
+CMD ["python", "main.py"]
