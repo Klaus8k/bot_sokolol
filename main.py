@@ -1,4 +1,5 @@
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, types, executor
+
 import json
 
 with open('db_SokololBot.json', 'r') as f:
@@ -11,6 +12,7 @@ dp = Dispatcher(bot=bot)
 # Хэндлер ответа
 @dp.message_handler(commands=['start', 'help', '1-10'])
 async def cmd_start(message: types.Message):
+    print(message)
     if message.get_command() == r'/start':
         await message.reply('Get start!@')
     elif message.get_command() == r'/help':
