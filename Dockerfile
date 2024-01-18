@@ -8,6 +8,7 @@ COPY . /usr/src/app
 
 
 # установка зависимостей
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requerements
 
 # ENV TZ 
