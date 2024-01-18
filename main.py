@@ -1,4 +1,8 @@
-from aiogram import Bot, Dispatcher, types, executor
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters.command import Command
+from aiogram.enums import ParseMode
+
+import asyncio
 
 import json
 # https://t.me/SokololBot
@@ -8,37 +12,35 @@ def file_check(file='db_SokololBot.json', type_open='r', unit=None):
     with open(file=file, mode=type_open) as f:
         if unit == 'token':
             return json.loads(f.read())['bot_token']
-        else:
-            result_unit = json.loads(f.read())['users']
-            return result_unit
+        users = json.loads(f.read())['users']
+        if unit in users.keys():
+            print(users[unit])
+            return users[unit]
 
 
-def get_user(message: types.Message):
-    users_dict = file_check(unit='users')
-    request_user = str(message['chat']['id'])
-    if request_user in [users_dict[user]['chat_id'] for user in users_dict.keys()]:
-        for i in users_dict.keys():
-            if users_dict[i]['chat_id'] == request_user:
-                return users_dict[i]
+bot = Bot(token=file_check(unit='token'), parse_mode="HTML")
 
-
-bot = Bot(token=file_check(unit='token'), parse_mode=types.ParseMode.HTML)
-
-dp = Dispatcher(bot=bot)
+dp = Dispatcher()
 
 
 # Хэндлер ответа
-@dp.message_handler(commands=['start', 'help'])
+@dp.message(F.text, Command('start', 'help', 'hmi'))
 async def cmd_start(message: types.Message):
-    user = get_user(message)
-    print('req_mess:', request_message)
+    user = file_check(unit=str(message.chat.id))
+    print('req_mess:', message)
     print(f'user {user["first_name"]}:', user)
 
-    if message.get_command() == r'/start':
-        await message.reply('Get start!@')
-    elif message.get_command() == r'/help':
+    if message.text == r'/start':
+        await message.reply("'start', 'help', 'hmi'")
+    elif message.text == r'/help':
         await message.answer('Бот помощник')
+    elif message.text == r'/hmi':
+        await bot.send_message(message.chat.id, user["first_name"])
+
+
+async def main():
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
